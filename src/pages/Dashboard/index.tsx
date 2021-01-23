@@ -1,10 +1,9 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { BiTrash, BiEdit } from 'react-icons/bi';
 import apiDebt from '../../services/apiDebt';
-import apiUser from '../../services/apiUser';
 
-import NewDebt from '../../components/NewDebt/index';
+import { useUsers } from '../../hooks/Users';
 
 import {
   Container,
@@ -17,11 +16,7 @@ import {
   WrapButton,
   ButtonNew,
 } from './styles';
-
-interface IUser {
-  id: number;
-  name: string;
-}
+import NewDebt from '../../components/NewDebt';
 
 interface IUserDebt {
   id: number; // userId
@@ -33,15 +28,10 @@ interface IUserDebt {
 }
 
 const Dashboard: React.FC = () => {
-  const [users, setUsers] = useState<IUser[]>([]);
   const [userDebts, setuserDebts] = useState<IUserDebt[]>([]);
   const [isOpenNewDebt, setIsOpenNewDebt] = useState(false);
 
-  const handleUserList = useCallback(async () => {
-    const response = await apiUser.get(`/users`);
-
-    setUsers(response.data);
-  }, []);
+  const { users } = useUsers();
 
   const handleDebtsList = useCallback(async () => {
     const response = await apiDebt.get(
@@ -56,6 +46,19 @@ const Dashboard: React.FC = () => {
 
     setuserDebts(response.data);
   }, []);
+
+  async function handleAddProduct(debt: IUserDebt): Promise<void> {
+    try {
+      const response = await apiDebt.post(
+        `/divida/?uuid=${process.env.REACT_APP_KEY_UUID}`,
+        {
+          debt,
+        },
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   const handleCreateDebt = useCallback(async () => {
     const response = await apiDebt.post(
@@ -82,16 +85,6 @@ const Dashboard: React.FC = () => {
       `/divida/${id}?uuid=${process.env.REACT_APP_KEY_UUID}`,
     );
   }, []);
-
-  const currentDate = useMemo(() => {
-    const [date] = new Date().toLocaleString('pt-BR').split(' ');
-    return date;
-  }, []);
-
-  useEffect(() => {
-    handleUserList();
-    // handleDebtsList();
-  }, [handleUserList, handleDebtsList]);
 
   return (
     <Container>
@@ -141,17 +134,19 @@ const Dashboard: React.FC = () => {
             </WrapButton>
         </RegisterWrap> */}
 
-          {/* <ButtonNew type="button" onClick={() => setIsOpenNewDebt(true)}>
+          <ButtonNew type="button" onClick={() => setIsOpenNewDebt(true)}>
             NOVO
-          </ButtonNew> */}
+          </ButtonNew>
         </ColumnRegister>
       </div>
-      {/* <NewDebt
+
+      <NewDebt
         isOpen={isOpenNewDebt}
         setIsOpen={() => {
           setIsOpenNewDebt(!isOpenNewDebt);
         }}
-      /> */}
+        handleCreateDebt={handleCreateDebt}
+      />
     </Container>
   );
 };

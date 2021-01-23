@@ -1,49 +1,66 @@
-import React, { useRef, useState, useEffect, useCallback } from 'react';
+import React, { useRef, useState, useCallback } from 'react';
 import { FormHandles } from '@unform/core';
 
 import Modal from '../Modal';
 
-import { Container, Form, Label, Select } from './styles';
-import apiUser from '../../services/apiUser';
+import { Form, Label, Select } from './styles';
 
-interface IUser {
-  id: number;
-  name: string;
+import { useUsers } from '../../hooks/Users';
+import currentDate from '../../utils/date';
+
+interface IUserDebt {
+  id: number; // userId
+  motivo: string;
+  valor: number;
+
+  created_At: string;
+  updated_At: string;
 }
 
 interface INewDebtProps {
   isOpen: boolean;
   setIsOpen: () => void;
+  handleCreateDebt: (debt: IUserDebt) => void;
 }
 
 const NewDebt: React.FC<INewDebtProps> = ({
   isOpen,
   setIsOpen,
+  handleCreateDebt,
 }: INewDebtProps) => {
-  const [userSelected, setUserSelected] = useState('');
-  const [users, setUsers] = useState<IUser[]>([]);
+  const { users } = useUsers();
+
+  const [userIdSelected, setUserIdSelected] = useState('');
+  const [reason, setReason] = useState('');
+  const [price, setPrice] = useState<string>('');
 
   const formRef = useRef<FormHandles>(null);
 
-  useEffect(() => {
-    handleUserList();
-  }, []);
+  const handleSubmit = useCallback(
+    async (data: IUserDebt) => {
+      handleCreateDebt({
+        id: Number(userIdSelected),
+        motivo: reason,
+        valor: Number(price),
 
-  async function handleUserList() {
-    const response = await apiUser.get(`/users`);
+        created_At: currentDate(),
+        updated_At: currentDate(),
+      });
 
-    setUsers(response.data);
-  }
+      setIsOpen();
+    },
+    [handleCreateDebt, setIsOpen, userIdSelected, price, reason],
+  );
 
   return (
     <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
-      <Form ref={formRef} onSubmit={() => console.log('enviou')}>
+      <Form ref={formRef} onSubmit={handleSubmit}>
         <h1>Nova dívida</h1>
         <div>
           <Label>Devedor</Label>
           <Select
             name="name"
-            onChange={event => setUserSelected(event.target.value)}
+            onChange={event => setUserIdSelected(event.target.value)}
           >
             <option disabled selected>
               Selecione ...
@@ -58,11 +75,19 @@ const NewDebt: React.FC<INewDebtProps> = ({
 
         <div>
           <Label>Motivo</Label>
-          <input type="text" />
+          <input
+            type="text"
+            value={reason}
+            onChange={event => setReason(event.target.value)}
+          />
         </div>
         <div>
           <Label>Valor</Label>
-          <input type="number" />
+          <input
+            type="number"
+            value={price}
+            onChange={event => setPrice(event.target.value)}
+          />
         </div>
       </Form>
 

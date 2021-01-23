@@ -4,6 +4,8 @@ import { BiTrash, BiEdit } from 'react-icons/bi';
 import apiDebt from '../../services/apiDebt';
 import apiUser from '../../services/apiUser';
 
+import NewDebt from '../../components/NewDebt/index';
+
 import {
   Container,
   ColumnUsers,
@@ -19,18 +21,6 @@ import {
 interface IUser {
   id: number;
   name: string;
-  // username: string;
-  // email: string;
-  // address: {
-  //   street: string;
-  //   suite: string;
-  //   city: string;
-  //   zipcode: string;
-  //   geo: {
-  //     lat: string;
-  //     lng: string;
-  //   };
-  // };
 }
 
 interface IUserDebt {
@@ -45,6 +35,7 @@ interface IUserDebt {
 const Dashboard: React.FC = () => {
   const [users, setUsers] = useState<IUser[]>([]);
   const [userDebts, setuserDebts] = useState<IUserDebt[]>([]);
+  const [isOpenNewDebt, setIsOpenNewDebt] = useState(false);
 
   const handleUserList = useCallback(async () => {
     const response = await apiUser.get(`/users`);
@@ -115,164 +106,22 @@ const Dashboard: React.FC = () => {
         <br />
 
         <ColumnDebts>
-          <DebtsWrap>
-            <div>
-              <BiEdit />
-              <BiTrash />
-            </div>
-            <h3>Motivo</h3>
-            UM SALGADO
-            <h3>Valor</h3>
-            199.9
-            <h3>Data da dívida</h3>
-            {currentDate}
-          </DebtsWrap>
-
-          <DebtsWrap>
-            <div>
-              <BiEdit />
-              <BiTrash />
-            </div>
-            <h3>Motivo</h3>
-            UM SALGADO
-            <h3>Valor</h3>
-            199.9
-            <h3>Data da dívida</h3>
-            {currentDate}
-          </DebtsWrap>
-          <DebtsWrap>
-            <div>
-              <BiEdit />
-              <BiTrash />
-            </div>
-            <h3>Motivo</h3>
-            UM SALGADO
-            <h3>Valor</h3>
-            199.9
-            <h3>Data da dívida</h3>
-            {currentDate}
-          </DebtsWrap>
-
-          <DebtsWrap>
-            <div>
-              <BiEdit />
-              <BiTrash />
-            </div>
-            <h3>Motivo</h3>
-            UM SALGADO
-            <h3>Valor</h3>
-            199.9
-            <h3>Data da dívida</h3>
-            {currentDate}
-          </DebtsWrap>
-          <DebtsWrap>
-            <div>
-              <BiEdit />
-              <BiTrash />
-            </div>
-            <h3>Motivo</h3>
-            UM SALGADO
-            <h3>Valor</h3>
-            199.9
-            <h3>Data da dívida</h3>
-            {currentDate}
-          </DebtsWrap>
-
-          <DebtsWrap>
-            <div>
-              <BiEdit />
-              <BiTrash />
-            </div>
-            <h3>Motivo</h3>
-            UM SALGADO
-            <h3>Valor</h3>
-            199.9
-            <h3>Data da dívida</h3>
-            {currentDate}
-          </DebtsWrap>
-          <DebtsWrap>
-            <div>
-              <BiEdit />
-              <BiTrash />
-            </div>
-            <h3>Motivo</h3>
-            UM SALGADO
-            <h3>Valor</h3>
-            199.9
-            <h3>Data da dívida</h3>
-            {currentDate}
-          </DebtsWrap>
-
-          <DebtsWrap>
-            <div>
-              <BiEdit />
-              <BiTrash />
-            </div>
-            <h3>Motivo</h3>
-            UM SALGADO
-            <h3>Valor</h3>
-            199.9
-            <h3>Data da dívida</h3>
-            {currentDate}
-          </DebtsWrap>
-          <DebtsWrap>
-            <div>
-              <BiEdit />
-              <BiTrash />
-            </div>
-            <h3>Motivo</h3>
-            UM SALGADO
-            <h3>Valor</h3>
-            199.9
-            <h3>Data da dívida</h3>
-            {currentDate}
-          </DebtsWrap>
-
-          <DebtsWrap>
-            <div>
-              <BiEdit />
-              <BiTrash />
-            </div>
-            <h3>Motivo</h3>
-            UM SALGADO
-            <h3>Valor</h3>
-            199.9
-            <h3>Data da dívida</h3>
-            {currentDate}
-          </DebtsWrap>
-          <DebtsWrap>
-            <div>
-              <BiEdit />
-              <BiTrash />
-            </div>
-            <h3>Motivo</h3>
-            UM SALGADO
-            <h3>Valor</h3>
-            199.9
-            <h3>Data da dívida</h3>
-            {currentDate}
-          </DebtsWrap>
-
-          <DebtsWrap>
-            <div>
-              <BiEdit />
-              <BiTrash />
-            </div>
-            <h3>Motivo</h3>
-            UM SALGADO
-            <h3>Valor</h3>
-            199.9
-            <h3>Data da dívida</h3>
-            {currentDate}
-          </DebtsWrap>
-
-          {userDebts.map(debt => (
-            <div>
-              {debt.motivo}
-              {debt.valor}
-              {debt.created_At}
-            </div>
-          ))}
+          {userDebts.length ? ( // mudar para  !userDebts.lenght ###############
+            'Clique em um usuário para ver suas respectivas dívidas'
+          ) : (
+            <DebtsWrap>
+              <div>
+                <BiEdit />
+                <BiTrash />
+              </div>
+              <h3>Motivo</h3>
+              <p> asdasddasdsad</p>
+              <h3>Valor</h3>
+              <span> 1999</span>
+              <h3>Data da dívida</h3>
+              <span>criado</span>
+            </DebtsWrap>
+          )}
         </ColumnDebts>
 
         <ColumnRegister>
@@ -292,9 +141,17 @@ const Dashboard: React.FC = () => {
             </WrapButton>
         </RegisterWrap> */}
 
-          <ButtonNew type="button"> NOVO </ButtonNew>
+          {/* <ButtonNew type="button" onClick={() => setIsOpenNewDebt(true)}>
+            NOVO
+          </ButtonNew> */}
         </ColumnRegister>
       </div>
+      {/* <NewDebt
+        isOpen={isOpenNewDebt}
+        setIsOpen={() => {
+          setIsOpenNewDebt(!isOpenNewDebt);
+        }}
+      /> */}
     </Container>
   );
 };

@@ -12,9 +12,10 @@ export const Container = styled.div`
 `;
 
 export const ColumnUsers = styled.nav`
-  width: 100%;
+  width: 200px;
 
   @media (max-width: 450px) {
+    width: 100%;
     display: flex;
     overflow-x: auto;
     flex-direction: row;
@@ -33,6 +34,9 @@ export const UserWrap = styled.a`
   margin: 0 15px 15px 0;
 
   border: #000 solid 1px;
+  border-radius: 4px;
+
+  cursor: pointer;
 `;
 
 export const ColumnDebts = styled.div`
@@ -46,10 +50,15 @@ export const ColumnDebts = styled.div`
 export const DebtsWrap = styled.div`
   position: relative;
   border: #ccc solid 1px;
+  border-radius: 4px;
   min-width: 240px;
 
   margin: 5px 0 10px 10px;
   padding: 5px;
+
+  p {
+    width: 200px;
+  }
 
   @media (max-width: 450px) {
     margin: 5px;
@@ -63,8 +72,10 @@ export const DebtsWrap = styled.div`
     right: 5px;
 
     svg {
-      font-size: 20px;
+      font-size: 16px;
       margin-bottom: 15px;
+
+      cursor: pointer;
     }
   }
 `;

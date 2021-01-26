@@ -3,6 +3,7 @@ import React, { useCallback, useState, useEffect } from 'react';
 
 import { BiTrash, BiEdit } from 'react-icons/bi';
 import { ToastContainer, toast } from 'react-toastify';
+import { AiOutlineLoading } from 'react-icons/ai';
 import apiDebt from '../../services/apiDebt';
 
 import { useUsers } from '../../hooks/Users';
@@ -19,6 +20,7 @@ import {
   WrapButtonActions,
   ButtonActions,
   ButtonNew,
+  Loading,
 } from './styles';
 import NewDebt from '../../components/NewDebt';
 import EditDebt from '../../components/EditDebt';
@@ -116,25 +118,27 @@ const Dashboard: React.FC = () => {
     }
   }, []);
 
-  return (
+  return !users.length ? (
+    <Loading>
+      <AiOutlineLoading size={35} />
+    </Loading>
+  ) : (
     <Container>
       <ToastContainer />
 
       <ContainerUsers>
         <Navigation>
-          {users.length
-            ? users.map(user => (
-                <UserWrap
-                  key={user.id}
-                  selected={selectedUserId === user.id}
-                  onClick={() =>
-                    setSelectedUserId(selectedUserId === user.id ? 0 : user.id)
-                  }
-                >
-                  {user.name}
-                </UserWrap>
-              ))
-            : 'Loading...'}
+          {users.map(user => (
+            <UserWrap
+              key={user.id}
+              selected={selectedUserId === user.id}
+              onClick={() =>
+                setSelectedUserId(selectedUserId === user.id ? 0 : user.id)
+              }
+            >
+              {user.name}
+            </UserWrap>
+          ))}
         </Navigation>
       </ContainerUsers>
 

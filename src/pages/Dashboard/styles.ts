@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
 interface IUserWrap {
   selected: boolean;
@@ -67,6 +67,28 @@ export const UserWrap = styled.a<IUserWrap>`
     & + a {
       margin-top: 0px;
     }
+  }
+`;
+
+const animationLoading = keyframes`
+
+  from {
+        transform: rotateZ(0)
+      }
+  to  {
+      transform: rotateZ(360deg)
+      }
+
+`;
+
+export const Loading = styled.div`
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+
+  svg {
+    animation: ${animationLoading} 1500ms infinite linear;
   }
 `;
 

@@ -2,6 +2,7 @@
 import React, { useCallback, useState, useEffect } from 'react';
 
 import { BiTrash, BiEdit } from 'react-icons/bi';
+import { ToastContainer, toast } from 'react-toastify';
 import apiDebt from '../../services/apiDebt';
 
 import { useUsers } from '../../hooks/Users';
@@ -40,6 +41,9 @@ const Dashboard: React.FC = () => {
   const [selectedUserId, setSelectedUserId] = useState(Number);
   const [render, setRender] = useState(true);
 
+  const toastElement = (message: string) => toast.success(message);
+  const toastElementError = (message: string) => toast.error(message);
+
   const filteredDebtsbyUser =
     selectedUserId === 0
       ? debts
@@ -72,37 +76,50 @@ const Dashboard: React.FC = () => {
         motivo,
         valor,
       });
+      toastElement('Dívida criada com Sucesso!');
       setRender(true);
-      // colocar um toast de sucesso
     } catch (error) {
-      console.log(error);
-      // colocar um toast de erro
+      toastElementError('Erro ao criar a dívida, tente novamente!');
     }
   }
   const handleUpdateDebt = useCallback(
     async ({ _id, idUsuario, motivo, valor }: Omit<IUserDebt, 'criado'>) => {
-      await apiDebt.put(
-        `/divida/${_id}?uuid=${process.env.REACT_APP_KEY_UUID}`,
-        {
-          idUsuario,
-          motivo,
-          valor,
-        },
-      );
-      setRender(true);
+      try {
+        await apiDebt.put(
+          `/divida/${_id}?uuid=${process.env.REACT_APP_KEY_UUID}`,
+          {
+            idUsuario,
+            motivo,
+            valor,
+          },
+        );
+
+        toastElement('Dívida editada com Sucesso!');
+        setRender(true);
+      } catch (error) {
+        toastElementError('Erro ao editar a dívida, tente novamente!');
+      }
     },
     [],
   );
 
   const handleDeleteDebt = useCallback(async (id: string) => {
-    await apiDebt.delete(
-      `/divida/${id}?uuid=${process.env.REACT_APP_KEY_UUID}`,
-    );
-    setRender(true);
+    try {
+      await apiDebt.delete(
+        `/divida/${id}?uuid=${process.env.REACT_APP_KEY_UUID}`,
+      );
+
+      toastElement('Dívida deletada com Sucesso!');
+      setRender(true);
+    } catch (error) {
+      toastElementError('Erro ao deletar a dívida, tente novamente!');
+    }
   }, []);
 
   return (
     <Container>
+      <ToastContainer />
+
       <ContainerUsers>
         <Navigation>
           {users.length
@@ -117,7 +134,7 @@ const Dashboard: React.FC = () => {
                   {user.name}
                 </UserWrap>
               ))
-            : 'Verifique sua Conexão com a internet!'}
+            : 'Loading...'}
         </Navigation>
       </ContainerUsers>
 

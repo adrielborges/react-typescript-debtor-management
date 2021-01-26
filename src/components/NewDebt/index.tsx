@@ -84,7 +84,6 @@ const NewDebt: React.FC<INewDebtProps> = ({
               type="number"
               name="valor"
               placeholder="Ex: R$ 500,00"
-              min="1"
               required
             />
           </InputWrap>

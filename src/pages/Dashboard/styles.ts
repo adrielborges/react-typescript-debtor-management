@@ -1,113 +1,184 @@
 import styled from 'styled-components';
 
+interface IUserWrap {
+  selected: boolean;
+}
+
 export const Container = styled.div`
   display: flex;
-  width: 100%;
-
-  padding: 15px;
 
   @media (max-width: 450px) {
     flex-direction: column;
   }
 `;
 
-export const ColumnUsers = styled.nav`
-  width: 200px;
+export const ContainerUsers = styled.aside`
+  height: 100vh;
+  position: sticky;
+  padding: 10px;
+  top: 0;
+  overflow-y: auto;
+  background: #eeeff4;
 
   @media (max-width: 450px) {
-    width: 100%;
-    display: flex;
-    overflow-x: auto;
-    flex-direction: row;
+    overflow-y: hidden;
+    height: auto;
+    z-index: 9999;
   }
 `;
 
-export const UserWrap = styled.a`
+export const Navigation = styled.nav`
+  @media (max-width: 450px) {
+    display: flex;
+    column-gap: 20px;
+  }
+`;
+
+export const UserWrap = styled.a<IUserWrap>`
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
 
   width: 180px;
   height: 50px;
 
-  margin: 0 15px 15px 0;
+  padding: 15px 10px;
 
-  border: #000 solid 1px;
+  border: #ececec solid 1px;
   border-radius: 4px;
 
   cursor: pointer;
+
+  background: ${({ selected }) => (selected ? '#758af8' : '#ffffff')};
+  color: ${({ selected }) => (selected ? '#ffffff' : '#656d78')};
+
+  transition: all 0.3s ease-out;
+
+  & + a {
+    margin-top: 10px;
+  }
+
+  :hover {
+    transform: scale(1.1);
+  }
+
+  @media (max-width: 450px) {
+    flex-shrink: 0;
+    & + a {
+      margin-top: 0px;
+    }
+  }
+`;
+
+export const Content = styled.main`
+  flex: 1;
+  margin-left: 10px;
+  @media (max-width: 450px) {
+    margin: 54px 0 0 0;
+  }
+`;
+
+export const Title = styled.header`
+  display: flex;
+  align-items: center;
+
+  height: 54px;
+  width: 100%;
+  padding: 8px 16px;
+  margin: 10px 0;
+
+  background: #ffffff;
+
+  h2 {
+    background: #f6f7fd;
+    color: #5d78ff;
+    padding: 8px 14px;
+    font-size: 14px;
+  }
+
+  @media (max-width: 450px) {
+    position: fixed;
+    top: 70px;
+    z-index: 8000;
+    margin-top: 0;
+  }
 `;
 
 export const ColumnDebts = styled.div`
   display: flex;
   flex-wrap: wrap;
+  gap: 10px;
 
   @media (max-width: 450px) {
     flex-direction: column;
+    width: 100%;
+    padding: 10px;
   }
 `;
-export const DebtsWrap = styled.div`
-  position: relative;
-  border: #ccc solid 1px;
-  border-radius: 4px;
-  min-width: 240px;
 
-  margin: 5px 0 10px 10px;
-  padding: 5px;
+export const DebtsWrap = styled.section`
+  position: relative;
+  border: #ececec solid 1px;
+  border-radius: 5px;
+  width: 240px;
+
+  padding: 20px;
+
+  background: #ffffff;
+
+  h3 {
+    font-size: 16px;
+    color: #6c7293;
+  }
+
+  h3:nth-of-type(2),
+  h3:nth-of-type(3) {
+    margin-top: 10px;
+  }
 
   p {
-    width: 200px;
+    width: 170px;
+    color: #656d78;
+  }
+
+  span {
+    color: #656d78;
+  }
+
+  p,
+  span {
+    font-size: 14px;
+    color: #a7abc3;
   }
 
   @media (max-width: 450px) {
-    margin: 5px;
-  }
-
-  div {
-    position: absolute;
-    display: flex;
-    flex-direction: column;
-    top: 5px;
-    right: 5px;
-
-    svg {
-      font-size: 16px;
-      margin-bottom: 15px;
-
-      cursor: pointer;
-    }
+    width: 100%;
   }
 `;
 
-export const ColumnRegister = styled.div`
-  position: relative;
-
+export const WrapButtonActions = styled.div`
+  position: absolute;
   display: flex;
   flex-direction: column;
-
-  width: 100%;
+  top: 10px;
+  right: 10px;
 `;
-
-export const RegisterWrap = styled.div`
+export const ButtonActions = styled.button`
   display: flex;
-  flex-direction: column;
-
-  align-items: center;
   justify-content: center;
+  align-items: center;
 
-  min-width: 240px;
+  width: 30px;
+  height: 30px;
+  outline: none;
+  border: none;
+  border-radius: 5px;
+  background: #eef1fe;
 
-  border: #000 solid 1px;
-`;
+  cursor: pointer;
 
-export const WrapButton = styled.div`
-  margin: 10px 0px;
-
-  button {
-    & + button {
-      margin-left: 10px;
-    }
+  & + button {
+    margin-top: 5px;
   }
 `;
 
@@ -117,5 +188,15 @@ export const ButtonNew = styled.button`
   bottom: 10px;
   right: 10px;
 
-  width: 60px;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 5px;
+
+  font-size: 14px;
+  font-weight: bold;
+
+  background: #3445e5;
+  color: #f0f0f0;
+
+  cursor: pointer;
 `;

@@ -1,46 +1,74 @@
-# Getting Started with Create React App
+<h1 align="center">
+  Debtor Management
+</h1>
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<p align="center">
 
-## Available Scripts
+<h4 align="center">
+  Projeto para atribuir dívidas a usuarios de uma API.
+</h4>
 
-In the project directory, you can run:
+<p align="center">
+  <a href="#rocket-tecnologias">Tecnologias usadas</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+  <a href="#memo-como-usar">Como usar</a>
+</p>
 
-### `yarn start`
+![App Screenshot](./images/dashboard.png)
+<br/>
+![App Screenshot1](./images/editDebt.png)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## :rocket: Tecnologias
+O projeto foi desenvolvido com as seguintes tecnologias:
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+- [ReactJS](https://reactjs.org/)
+- [Typescript][ts]
+- [Styled Components](https://www.styled-components.com/)
+- [Axios](https://github.com/axios/axios)
+- [Formik](https://formik.org/)
 
-### `yarn test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- [VS Code][vscode] com [EditorConfig][vceditconfig] e [ESLint][vceslint]
+---
+## :memo: Como usar ?
+1. Primeiramente clone o projeto.
 
-### `yarn build`
+```bash
+git clone https://github.com/adrielborges/react-typescript-debtor-management
+```
+2. Entre na pasta do projeto.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```bash
+  cd react-typescript-debtor-management
+```
+3. Instale as dependências.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+* **npm**
+```bash
+npm install
+```
+* **yarn**
+```bash
+yarn
+```
+4. Renomeie o arquivo `.env.example` para `.env.local` e dentro dele substitua o `uuid-key-to-api` pela sua chave de acesso a api.
+<br/>
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+5. Para iniciar a aplicação:
+* **npm**
+```bash
+npm run start
+```
+* **yarn**
+```bash
+yarn start
+```
 
-### `yarn eject`
+---
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+Feito por Adriel Borges :wave: [Vamo se conectar!](https://www.linkedin.com/in/adriel-borgesti/)
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+[ts]: https://www.typescriptlang.org
+[vscode]: https://code.visualstudio.com/
+[yarn]: https://yarnpkg.com/
+[vceditconfig]: https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig
+[vceslint]: https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint

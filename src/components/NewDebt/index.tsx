@@ -1,26 +1,29 @@
-import React, { useRef, useState, useCallback } from 'react';
-import { FormHandles } from '@unform/core';
+import React, { useCallback } from 'react';
 
-import Modal from '../Modal';
-
-import { Form, Label, Select } from './styles';
+import { Field, Formik } from 'formik';
+import {
+  ModalDiv,
+  FormFormik,
+  Label,
+  Select,
+  InputWrap,
+  ButtonWrap,
+  Title,
+} from './styles';
 
 import { useUsers } from '../../hooks/Users';
-import currentDate from '../../utils/date';
+import { IUserDebt } from '../../pages/Dashboard';
 
-interface IUserDebt {
-  id: number; // userId
+type HandleSubmitArguments = {
+  id: string;
   motivo: string;
-  valor: number;
-
-  created_At: string;
-  updated_At: string;
-}
+  valor: string;
+};
 
 interface INewDebtProps {
   isOpen: boolean;
   setIsOpen: () => void;
-  handleCreateDebt: (debt: IUserDebt) => void;
+  handleCreateDebt: (debt: Omit<IUserDebt, '_id' | 'criado'>) => void;
 }
 
 const NewDebt: React.FC<INewDebtProps> = ({
@@ -30,73 +33,72 @@ const NewDebt: React.FC<INewDebtProps> = ({
 }: INewDebtProps) => {
   const { users } = useUsers();
 
-  const [userIdSelected, setUserIdSelected] = useState('');
-  const [reason, setReason] = useState('');
-  const [price, setPrice] = useState<string>('');
-
-  const formRef = useRef<FormHandles>(null);
-
   const handleSubmit = useCallback(
-    async (data: IUserDebt) => {
+    ({ id, motivo, valor }: HandleSubmitArguments) => {
       handleCreateDebt({
-        id: Number(userIdSelected),
-        motivo: reason,
-        valor: Number(price),
-
-        created_At: currentDate(),
-        updated_At: currentDate(),
+        idUsuario: Number(id),
+        motivo,
+        valor: Number(valor),
       });
 
       setIsOpen();
     },
-    [handleCreateDebt, setIsOpen, userIdSelected, price, reason],
+    [handleCreateDebt, setIsOpen],
   );
 
   return (
-    <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
-      <Form ref={formRef} onSubmit={handleSubmit}>
-        <h1>Nova dívida</h1>
-        <div>
-          <Label>Devedor</Label>
-          <Select
-            name="name"
-            onChange={event => setUserIdSelected(event.target.value)}
-          >
-            <option disabled selected>
-              Selecione ...
-            </option>
-            {users.map(user => (
-              <option key={user.id} value={user.name}>
-                {user.name}
+    <ModalDiv isOpen={isOpen} setIsOpen={setIsOpen}>
+      <Title>Nova dívida</Title>
+      <Formik
+        initialValues={{ id: '', motivo: '', valor: '' }}
+        onSubmit={handleSubmit}
+      >
+        <FormFormik>
+          <InputWrap>
+            <Label>Devedor:</Label>
+            <Select component="select" name="id" required>
+              <option disabled value="Selecione">
+                Selecione ...
               </option>
-            ))}
-          </Select>
-        </div>
+              {users.map(user => (
+                <option key={user.id} value={user.id}>
+                  {user.name}
+                </option>
+              ))}
+            </Select>
+          </InputWrap>
 
-        <div>
-          <Label>Motivo</Label>
-          <input
-            type="text"
-            value={reason}
-            onChange={event => setReason(event.target.value)}
-          />
-        </div>
-        <div>
-          <Label>Valor</Label>
-          <input
-            type="number"
-            value={price}
-            onChange={event => setPrice(event.target.value)}
-          />
-        </div>
-      </Form>
+          <InputWrap>
+            <Label>Motivo:</Label>
+            <Field
+              type="text"
+              name="motivo"
+              placeholder="Ex: Dívida cartão de crédito"
+              required
+            />
+          </InputWrap>
 
-      <button type="submit"> Adicionar </button>
+          <InputWrap>
+            <Label>Valor:</Label>
+            <Field
+              type="number"
+              name="valor"
+              placeholder="Ex: R$ 500,00"
+              min="1"
+              required
+            />
+          </InputWrap>
 
-      <button type="button" onClick={() => setIsOpen()}>
-        Cancelar
-      </button>
-    </Modal>
+          <ButtonWrap>
+            <button type="button" onClick={() => setIsOpen()}>
+              Cancelar
+            </button>
+
+            <button type="submit">Adicionar</button>
+          </ButtonWrap>
+        </FormFormik>
+      </Formik>
+    </ModalDiv>
   );
 };
 

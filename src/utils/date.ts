@@ -1,6 +1,6 @@
-const currentDate = (): string => {
-  const [date] = new Date().toLocaleString('pt-BR').split(' ');
-  return date;
+const formatDate = (date: string): string => {
+  const [formattedDate] = new Date(date).toLocaleString('pt-BR').split(' ');
+  return formattedDate;
 };
 
-export default currentDate;
+export default formatDate;

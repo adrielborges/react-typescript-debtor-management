@@ -47,7 +47,10 @@
       }
     ],
     "no-use-before-define": "off",
-    "prettier/prettier": "error"
+    "prettier/prettier": "error",
+    "no-underscore-dangle":"off",
+    "react/jsx-curly-newline":"off",
+    "no-param-reassign":"off"
   },
   "settings": {
     "import/resolver": {

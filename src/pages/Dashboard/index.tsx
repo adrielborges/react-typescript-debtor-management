@@ -1,4 +1,5 @@
-import React, { useCallback, useState } from 'react';
+/* eslint-disable react/jsx-indent */
+import React, { useCallback, useState, useEffect } from 'react';
 
 import { BiTrash, BiEdit } from 'react-icons/bi';
 import apiDebt from '../../services/apiDebt';
@@ -7,138 +8,164 @@ import { useUsers } from '../../hooks/Users';
 
 import {
   Container,
-  ColumnUsers,
+  ContainerUsers,
+  Navigation,
   UserWrap,
+  Content,
+  Title,
   ColumnDebts,
   DebtsWrap,
-  ColumnRegister,
-  RegisterWrap,
-  WrapButton,
+  WrapButtonActions,
+  ButtonActions,
   ButtonNew,
 } from './styles';
 import NewDebt from '../../components/NewDebt';
+import EditDebt from '../../components/EditDebt';
+import formatDate from '../../utils/date';
 
-interface IUserDebt {
-  id: number; // userId
+export interface IUserDebt {
+  _id: string;
+  idUsuario: number; // userId
   motivo: string;
   valor: number;
 
-  created_At: Date;
-  updated_At: Date;
+  criado: string;
 }
 
 const Dashboard: React.FC = () => {
-  const [userDebts, setuserDebts] = useState<IUserDebt[]>([]);
-  const [isOpenNewDebt, setIsOpenNewDebt] = useState(false);
+  const [debts, setDebts] = useState<IUserDebt[]>([]);
+  const [isOpenNewDebt, setIsOpenNewDebt] = useState(false); // modal
+  const [isOpenEditDebt, setIsOpenEditDebt] = useState(false); // modal
+  const [selectedDebt, setSelectedDebt] = useState<IUserDebt>({} as IUserDebt);
+  const [selectedUserId, setSelectedUserId] = useState(Number);
+  const [render, setRender] = useState(true);
+
+  const filteredDebtsbyUser =
+    selectedUserId === 0
+      ? debts
+      : debts.filter(debt => debt.idUsuario === selectedUserId);
 
   const { users } = useUsers();
 
-  const handleDebtsList = useCallback(async () => {
-    const response = await apiDebt.get(
-      `/divida/?uuid=${process.env.REACT_APP_KEY_UUID}`,
-    );
+  const handleAllDebtsList = useCallback(async () => {
+    const {
+      data: { result },
+    } = await apiDebt.get(`/divida/?uuid=${process.env.REACT_APP_KEY_UUID}`);
+    setDebts(result);
   }, []);
 
-  const handleGetDebt = useCallback(async (id: number) => {
-    const response = await apiDebt.get(
-      `/divida/${id}?uuid=${process.env.REACT_APP_KEY_UUID}`,
-    );
+  useEffect(() => {
+    if (render) {
+      handleAllDebtsList();
+      setRender(false);
+    }
+  }, [handleAllDebtsList, render]);
 
-    setuserDebts(response.data);
-  }, []);
-
-  async function handleAddProduct(debt: IUserDebt): Promise<void> {
+  async function handleCreateDebt({
+    idUsuario,
+    motivo,
+    valor,
+  }: Omit<IUserDebt, '_id' | 'criado'>): Promise<void> {
     try {
-      const response = await apiDebt.post(
-        `/divida/?uuid=${process.env.REACT_APP_KEY_UUID}`,
-        {
-          debt,
-        },
-      );
+      await apiDebt.post(`/divida/?uuid=${process.env.REACT_APP_KEY_UUID}`, {
+        idUsuario,
+        motivo,
+        valor,
+      });
+      setRender(true);
+      // colocar um toast de sucesso
     } catch (error) {
       console.log(error);
+      // colocar um toast de erro
     }
   }
+  const handleUpdateDebt = useCallback(
+    async ({ _id, idUsuario, motivo, valor }: Omit<IUserDebt, 'criado'>) => {
+      await apiDebt.put(
+        `/divida/${_id}?uuid=${process.env.REACT_APP_KEY_UUID}`,
+        {
+          idUsuario,
+          motivo,
+          valor,
+        },
+      );
+      setRender(true);
+    },
+    [],
+  );
 
-  const handleCreateDebt = useCallback(async () => {
-    const response = await apiDebt.post(
-      `/divida/?uuid=${process.env.REACT_APP_KEY_UUID}`,
-      {
-        idUsuario: 1,
-        motivo: 'Parcela 3 carro',
-        valor: 199.99,
-      },
-    );
-  }, []);
-  const handleUpdateDebt = useCallback(async (id: number) => {
-    const response = await apiDebt.put(
-      `/divida/${id}?uuid=${process.env.REACT_APP_KEY_UUID}`,
-      {
-        idUsuario: id,
-        motivo: 'Parcela 3 carro',
-        valor: 199.99,
-      },
-    );
-  }, []);
-  const handleDeleteDebt = useCallback(async (id: number) => {
-    const response = await apiDebt.put(
+  const handleDeleteDebt = useCallback(async (id: string) => {
+    await apiDebt.delete(
       `/divida/${id}?uuid=${process.env.REACT_APP_KEY_UUID}`,
     );
+    setRender(true);
   }, []);
 
   return (
     <Container>
-      <ColumnUsers>
-        {users.length
-          ? users.map(user => <UserWrap key={user.id}>{user.name}</UserWrap>)
-          : 'Verifique sua Conexão com a internet!'}
-      </ColumnUsers>
+      <ContainerUsers>
+        <Navigation>
+          {users.length
+            ? users.map(user => (
+                <UserWrap
+                  key={user.id}
+                  selected={selectedUserId === user.id}
+                  onClick={() =>
+                    setSelectedUserId(selectedUserId === user.id ? 0 : user.id)
+                  }
+                >
+                  {user.name}
+                </UserWrap>
+              ))
+            : 'Verifique sua Conexão com a internet!'}
+        </Navigation>
+      </ContainerUsers>
 
-      <div>
-        <h2>Dívidas</h2>
-        <br />
+      <Content>
+        <Title>
+          <div>
+            <h2>Dívidas</h2>
+          </div>
+        </Title>
 
         <ColumnDebts>
-          {userDebts.length ? ( // mudar para  !userDebts.lenght ###############
-            'Clique em um usuário para ver suas respectivas dívidas'
-          ) : (
-            <DebtsWrap>
-              <div>
-                <BiEdit />
-                <BiTrash />
-              </div>
+          {filteredDebtsbyUser.map(debt => (
+            <DebtsWrap key={debt._id}>
+              <WrapButtonActions>
+                <ButtonActions
+                  type="button"
+                  onClick={() => {
+                    setIsOpenEditDebt(true);
+                    setSelectedDebt(debt);
+                  }}
+                >
+                  <BiEdit size={16} color="#758af8" />
+                </ButtonActions>
+
+                <ButtonActions
+                  type="button"
+                  onClick={() => handleDeleteDebt(debt._id)}
+                >
+                  <BiTrash size={16} color="#758af8" />
+                </ButtonActions>
+              </WrapButtonActions>
               <h3>Motivo</h3>
-              <p> asdasddasdsad</p>
+              <p>{debt.motivo}</p>
               <h3>Valor</h3>
-              <span> 1999</span>
+              <span>
+                R$
+                {debt.valor}
+              </span>
               <h3>Data da dívida</h3>
-              <span>criado</span>
+              <span>{formatDate(debt.criado)}</span>
             </DebtsWrap>
-          )}
+          ))}
         </ColumnDebts>
 
-        <ColumnRegister>
-          {/* <RegisterWrap>
-          <div>
-          <h3>Cliente</h3>
-          <input type="select" />
-          <h3>Motivo</h3>
-            <input type="text" />
-            <h3>Valor</h3>
-            <input type="text" />
-          </div>
-
-          <WrapButton>
-          <button type="button">Excluir</button>
-            <button type="button">Salvar</button>
-            </WrapButton>
-        </RegisterWrap> */}
-
-          <ButtonNew type="button" onClick={() => setIsOpenNewDebt(true)}>
-            NOVO
-          </ButtonNew>
-        </ColumnRegister>
-      </div>
+        <ButtonNew type="button" onClick={() => setIsOpenNewDebt(true)}>
+          Nova dívida
+        </ButtonNew>
+      </Content>
 
       <NewDebt
         isOpen={isOpenNewDebt}
@@ -146,6 +173,15 @@ const Dashboard: React.FC = () => {
           setIsOpenNewDebt(!isOpenNewDebt);
         }}
         handleCreateDebt={handleCreateDebt}
+      />
+
+      <EditDebt
+        isOpen={isOpenEditDebt}
+        setIsOpen={() => {
+          setIsOpenEditDebt(!isOpenEditDebt);
+        }}
+        handleUpdateDebt={handleUpdateDebt}
+        debt={selectedDebt}
       />
     </Container>
   );

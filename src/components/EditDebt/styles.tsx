@@ -23,6 +23,11 @@ export const FormFormik = styled(Form)`
 export const InputWrap = styled.div`
   margin-bottom: 10px;
 
+  p {
+    font-size: 14px;
+    color: #656d78;
+  }
+
   input {
     width: 100%;
     height: 45px;
